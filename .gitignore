@@ -14,3 +14,9 @@ _book
 *.epub
 *.mobi
 *.pdf
+
+#misc
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

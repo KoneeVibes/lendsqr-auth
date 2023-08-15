@@ -96,13 +96,13 @@ app.post('/login', (req, res) => {
         })
 })
 
-app.get("/free-endpoint", (req, res) => {
+app.get("/home", (req, res) => {
     res.json({
-        message: "You have a free access to this endpoint"
+        message: "you have a free access to this endpoint"
     })
 })
 
-app.get("/auth-endpoint", auth, (req, res) => {
+app.get("/dashboard", auth, (req, res) => {
     res.json({
         message: "You are authenticated to access this endpoint"
     })
