@@ -1,2 +1,2 @@
 # lendsqr-auth
-clone backend authentication service for lendsqr
+Backend authentication service for clone lendsqr
