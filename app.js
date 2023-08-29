@@ -1,14 +1,14 @@
 const dbConnect = require('./model/dbConnect');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
+const User = require('./model/userModel');
 const bodyParser = require('body-parser');
-// const corsOptions = require("./config/corsOptions");
 const auth = require('./middleware/auth');
 
-// connect to database
 dbConnect();
 
-// middleware for all routes
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -21,19 +21,91 @@ app.use((req, res, next) => {
     );
     next();
 });
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// endpoints and route handlers
-app.use('/register', require("./routes/api/register"));
-app.use('/login', require("./routes/api/login"));
-app.use("/home", require("./routes/root"));
-app.use("/dashboard", auth, require("./routes/api/dashboard"));
+app.post('/register', (req, res) => {
+    bcrypt.hash(req.body.password, 10)
+        .then((hashedPassword) => {
+            const user = new User({
+                email: req.body.email,
+                password: hashedPassword,
+            });
+            user
+                .save()
+                .then((result) => {
+                    res.status(200).send({
+                        message: "Successfully created user",
+                        result,
+                    })
+                })
+                .catch((err) => {
+                    res.status(500).send({
+                        message: "Error occured while creating user",
+                        err,
+                    })
+                })
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: 'Your password was not successfully hashed',
+                err
+            })
+        })
+})
 
-// error handler for routes that are not available:
-app.use("*", require("./errorHandler/routeErrorHandler"));
+app.post('/login', (req, res) => {
+    User.findOne({
+        email: req.body.email
+    })
+        .then((user) => {
+            bcrypt.compare(req.body.password, user.password) //Throws an error only if req.body.password and user.password are not of the same data type. Else, it returns true of false depending on similarity of values that's why we do a follow up conditional check to test values.
+                .then((passwordCheck) => {
+                    if (!passwordCheck) {
+                        return res.status(400).send({
+                            message: "Passwords don't match",
+                        })
+                    }
+                    const token = jwt.sign(
+                        {
+                            userId: user._id,
+                            userEmail: user.email,
+                        },
+                        "RANDOM-TOKEN",
+                        { expiresIn: "24h" }
+                    )
+                    return res.status(200).send({
+                        message: "Login Successful",
+                        email: user.email,
+                        token,
+                    })
+                })
+                .catch((err) => {
+                    res.status(400).send({
+                        message: "Password entered is not in the database",
+                        err
+                    })
+                })
+        })
+        .catch((err) => {
+            res.status(400).send({
+                message: "Your email was not found in the database",
+                err
+            })
+        })
+})
 
-// To catch errors that occur while running route handlers and middleware functions if the handlers and middleware functions don't already handle errors internally
-app.use(require("./errorHandler/middlewareErrorHandler"));
+app.get("/free-endpoint", (req, res) => {
+    res.json({
+        message: "You have a free access to this endpoint"
+    })
+})
+
+app.get("/auth-endpoint", auth, (req, res) => {
+    res.json({
+        message: "You are authenticated to access this endpoint"
+    })
+})
 
 module.exports = app;
