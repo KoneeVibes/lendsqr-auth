@@ -5,12 +5,14 @@ const bodyParser = require('body-parser');
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
 const auth = require('./middleware/auth');
+const credentials = require('./middleware/credentials');
 
 // connect to database
 dbConnect();
 
 // middleware for all routes
-app.use(corsOptions);
+app.use(credentials);
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -19,7 +21,7 @@ app.use('/register', require("./routes/api/register"));
 app.use('/login', require("./routes/api/login"));
 app.use("/home", require("./routes/root"));
 
-app.options('/dashboard', cors())
+// app.options('/dashboard', cors())
 app.use("/dashboard", cors(), auth, require("./routes/api/dashboard"));
 
 // error handler for routes that are not available:
