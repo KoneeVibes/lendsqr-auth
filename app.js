@@ -2,6 +2,7 @@ const dbConnect = require('./model/dbConnect');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
 const auth = require('./middleware/auth');
 
@@ -17,7 +18,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/register', require("./routes/api/register"));
 app.use('/login', require("./routes/api/login"));
 app.use("/home", require("./routes/root"));
-app.use("/dashboard", auth, require("./routes/api/dashboard"));
+
+app.options('/dashboard', cors())
+app.use("/dashboard", cors(), auth, require("./routes/api/dashboard"));
 
 // error handler for routes that are not available:
 app.use("*", require("./errorHandler/routeErrorHandler"));
