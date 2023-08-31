@@ -20,10 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/register', require("./routes/api/register"));
 app.use('/login', require("./routes/api/login"));
 app.use("/home", require("./routes/root"));
-
-// app.options('/dashboard', cors())
-app.use(auth)
-app.use("/dashboard", require("./routes/api/dashboard"));
+app.use("/dashboard", auth, require("./routes/api/dashboard"));
 
 // error handler for routes that are not available:
 app.use("*", require("./errorHandler/routeErrorHandler"));
