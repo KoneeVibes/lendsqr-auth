@@ -22,7 +22,8 @@ app.use('/login', require("./routes/api/login"));
 app.use("/home", require("./routes/root"));
 
 // app.options('/dashboard', cors())
-app.use("/dashboard", auth, require("./routes/api/dashboard"));
+app.use(auth)
+app.use("/dashboard", require("./routes/api/dashboard"));
 
 // error handler for routes that are not available:
 app.use("*", require("./errorHandler/routeErrorHandler"));
