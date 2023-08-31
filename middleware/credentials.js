@@ -8,6 +8,7 @@ const credentials = (req, res, next) => {
         // so calling next() broke the app. should implement logic to catch error from this block.
         // or write typescript. lol.
     } else {
+        console.log("request from an unauthorized origin")
         res.status(401).json({
             message: "request from an unauthorized origin"
         })
