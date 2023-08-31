@@ -5,7 +5,7 @@ const credentials = (req, res, next) => {
     if (allowedOrigins.includes(origin)) {
         res.headers("Access-Control-Allow-Credentials", true)
     }
-    next()
+    next();
 }
 
 module.exports = credentials;
