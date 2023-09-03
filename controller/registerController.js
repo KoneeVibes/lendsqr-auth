@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const User = require("../model/userModel");
 
 const registerNewUser = (req, res) => {
-    if (!req.body.password) return res.sendStatus(404);
+    if (!req.body.password || !req.body.email) return res.sendStatus(400);
     bcrypt.hash(req.body.password, 10)
         .then((hashedPassword) => {
             const user = new User({
@@ -12,7 +12,7 @@ const registerNewUser = (req, res) => {
             user
                 .save()
                 .then((result) => {
-                    res.status(200).send({
+                    res.status(201).send({
                         message: "Successfully created user",
                         result,
                     })
