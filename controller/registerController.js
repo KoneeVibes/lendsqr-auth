@@ -6,8 +6,8 @@ const registerNewUser = (req, res) => {
     bcrypt.hash(req.body.password, 10)
         .then((hashedPassword) => {
             const user = new User({
-                email: req.body.email,
-                password: hashedPassword,
+                'personalInfo.email': req.body.email,
+                'personalInfo.password': hashedPassword,
             });
             user
                 .save()

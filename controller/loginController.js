@@ -5,10 +5,10 @@ const User = require("../model/userModel");
 const loginUser = (req, res) => {
     if (!req.body.email || !req.body.password) return res.sendStatus(400);
     User.findOne({
-        email: req.body.email
+        'personalInfo.email': req.body.email
     })
         .then((user) => {
-            bcrypt.compare(req.body.password, user.password) //Throws an error only if req.body.password and user.password are not of the same data type. Else, it returns true of false depending on similarity of values that's why we do a follow up conditional check to test values.
+            bcrypt.compare(req.body.password, user['personalInfo'].password) //Throws an error only if req.body.password and user.password are not of the same data type. Else, it returns true of false depending on similarity of values that's why we do a follow up conditional check to test values.
                 .then((passwordCheck) => {
                     if (!passwordCheck) {
                         return res.status(401).send({
