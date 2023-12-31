@@ -12,6 +12,8 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: [true, "Please provide a password!"],
             unique: false,
+            //adding the match schemaType to further validate user password
+            // match: RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
         },
         username: String,
         phoneNumber: Number,
@@ -33,11 +35,10 @@ const userSchema = new mongoose.Schema({
     },
 
     socials: {
-        twitter: String,
-        facebook: String,
-        instagram: String
+        type: Map,
+        of: String,
     },
-    
+
     guarantorDetails: {
         name: String,
         email: String,

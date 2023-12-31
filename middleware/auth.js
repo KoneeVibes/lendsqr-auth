@@ -13,7 +13,8 @@ module.exports = async (req, res, next) => {
     }
     catch (err) {
         res.status(401).json({
-            err: new Error("In Request")
+            err: new Error("In Request"),
+            message: "failed authentication test"
         })
     }
 }
