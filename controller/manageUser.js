@@ -8,8 +8,9 @@ const getUser = async (req, res) => {
     }
     try {
         const user = await User.find(query);
-        res.json({
-            message: user
+        res.status(200).json({
+            message: "successful",
+            user
         });
     } catch (error) {
         res.status(500).json({
@@ -62,7 +63,7 @@ const addUser = async (req, res) => {
         });
         newUser
             .save()
-            .then((userDetails) => res.status(200).json({
+            .then((userDetails) => res.status(201).json({
                 message: 'Successful',
                 userDetails: userDetails
             }))
